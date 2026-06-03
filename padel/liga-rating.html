@@ -256,10 +256,16 @@ function runGame(players, game) {
     const b1 = players[game.team2[0]];
     const b2 = players[game.team2[1]];
 
-    if (!a1) return { error: `Игрок @${game.team1[0]} not found` };
-    if (!a2) return { error: `Игрок @${game.team1[1]} not found` };
-    if (!b1) return { error: `Игрок @${game.team2[0]} not found` };
-    if (!b2) return { error: `Игрок @${game.team2[1]} not found` };
+    if (!a1) return { error: `Player @${game.team1[0]} not found` };
+    if (!a2) return { error: `Player @${game.team1[1]} not found` };
+    if (!b1) return { error: `Player @${game.team2[0]} not found` };
+    if (!b2) return { error: `Player @${game.team2[1]} not found` };
+
+    const allNicks = [game.team1[0], game.team1[1], game.team2[0], game.team2[1]];
+    if (new Set(allNicks).size !== 4) {
+        const dup = allNicks.find((n, i) => allNicks.indexOf(n) !== i);
+        return { error: `Duplicate player @${dup} in one game` };
+    }
 
     const s1 = game.score1, s2 = game.score2;
     const k = (s1 > 5 || s2 > 5) ? 30 : 20;
