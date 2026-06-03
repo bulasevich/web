@@ -98,6 +98,9 @@
 
         .standings { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-top: 8px; }
         .rank-num { color: #ccc; width: 30px; }
+        .mode-btn { background: #e8e8e8; color: #555; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+        .mode-btn:hover { background: #d0d0d0; }
+        .mode-btn.active { background: #4a90e2; color: #fff; }
 
         .error { background: #fff5f5; border-left: 3px solid #e74c3c; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; color: #c0392b; }
 
@@ -117,7 +120,7 @@
 
 <div class="inputs">
     <div class="col-nicks">
-        <label>Ники</label>
+        <label>Игроки</label>
         <textarea id="nicks" rows="12" placeholder="@Ник">@Kirsh27
 @Motveous
 @alexspectr
@@ -170,7 +173,7 @@ function parsePlayers() {
         const key = display.replace('@', '').toLowerCase();
         const rating = parseInt((ratings[i] || '').trim());
         if (key && !isNaN(rating)) {
-            players[key] = { display, rating, initial: rating };
+            players[key] = { display, rating, initial: rating, order: i };
         }
     }
     return players;
@@ -186,14 +189,18 @@ function parseSessions() {
             if (current.length) { sessions.push(current); current = []; }
             continue;
         }
-        const m4 = t.match(/@(\S+)\s+@(\S+)\s+(\d+):(\d+)\s+@(\S+)\s+@(\S+)/i);
-        const m2 = !m4 && t.match(/@(\S+)\s+@(\S+)\s+(\d+):(\d+)/i);
+        const m4 = t.match(/^@(\S+)\s+@(\S+)\s+(\d+):(\d+)\s+@(\S+)\s+@(\S+)\s*$/i);
+        const m2raw = !m4 && t.match(/^@(\S+)\s+@(\S+)\s+(\d+):(\d+)(.*)/i);
+        const m2 = (m2raw && m2raw[5].trim() === '') ? m2raw : null;
+        const m2garbage = (m2raw && m2raw[5].trim() !== '') ? m2raw : null;
         if (m4) {
             current.push({
                 team1: [m4[1].toLowerCase(), m4[2].toLowerCase()],
                 score1: parseInt(m4[3]), score2: parseInt(m4[4]),
                 team2: [m4[5].toLowerCase(), m4[6].toLowerCase()],
             });
+        } else if (m2garbage) {
+            current.push({ parseError: `Не удалось разобрать строку: «${t}»` });
         } else if (m2) {
             current.push({
                 team1: [m2[1].toLowerCase(), m2[2].toLowerCase()],
@@ -309,16 +316,40 @@ function sessionTableHtml(players, results) {
     return html + `</table></div>`;
 }
 
-function standingsHtml(players) {
-    const sorted = Object.values(players).sort((a, b) => b.rating - a.rating);
-    let html = `<div class="standings">
-        <h2 style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#999;margin:0 0 10px">Итоговый рейтинг</h2>
-        <table><tr><th>#</th><th>Игрок</th><th>Рейтинг</th><th>Δ</th></tr>`;
+let standingsPlayers = null;
+let standingsOrder = 'old';
+
+function renderStandings() {
+    if (!standingsPlayers) return;
+    const byNew = Object.values(standingsPlayers).sort((a, b) => b.rating - a.rating);
+    const byOld = Object.values(standingsPlayers).sort((a, b) => a.order - b.order);
+    const sorted = standingsOrder === 'new' ? byNew : byOld;
+    let rows = '';
     sorted.forEach((p, i) => {
         const total = p.rating - p.initial;
-        html += `<tr><td class="rank-num">${i+1}</td><td>${p.display}</td><td>${p.rating}</td>${deltaCell(total)}</tr>`;
+        rows += `<tr><td class="rank-num">${i+1}</td><td>${p.display}</td><td>${p.rating}</td>${deltaCell(total)}</tr>`;
     });
-    return html + `</table></div>`;
+    document.getElementById('standings-body').innerHTML = rows;
+    const chk = document.getElementById('chk-sort');
+    if (chk) chk.checked = standingsOrder === 'new';
+}
+
+function setStandingsOrder(order) {
+    standingsOrder = order;
+    renderStandings();
+}
+
+function standingsHtml(players) {
+    standingsPlayers = players;
+    return `<div class="standings">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <h2 style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#999;margin:0">Итоговый рейтинг</h2>
+            <label style="font-size:12px;color:#999;display:flex;align-items:center;gap:4px;cursor:pointer">
+                сортировка <input type="checkbox" id="chk-sort" onchange="setStandingsOrder(this.checked?'new':'old')">
+            </label>
+        </div>
+        <table><tr><th>#</th><th>Игрок</th><th>Рейтинг</th><th>Δ</th></tr><tbody id="standings-body"></tbody></table>
+    </div>`;
 }
 
 function calculate() {
@@ -338,6 +369,7 @@ function calculate() {
 
     html += standingsHtml(players);
     document.getElementById('results').innerHTML = html;
+    renderStandings();
 }
 
 calculate();
