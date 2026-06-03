@@ -66,6 +66,8 @@
             margin-bottom: 12px;
             display: inline-block;
             width: auto;
+            max-width: 100%;
+            overflow-x: auto;
         }
         .game-header {
             display: flex;
@@ -295,7 +297,7 @@ function deltaCell(diff) {
 
 function sessionTableHtml(players, results) {
     let html = `<div class="game-card" style="padding:10px 14px">
-        <table><tr><th>Счёт</th><th>Игрок</th><th>До</th><th>После</th><th>Δ</th></tr>`;
+        <table><tr><th style="width:36px">Счёт</th><th>Игрок</th><th>До</th><th style="width:40px">После</th><th>Δ</th></tr>`;
     results.forEach(({game, result}, gi) => {
         if (result.error) { html += `<tr><td colspan="5" style="padding:0"><div style="background:#e74c3c;color:#fff;font-size:14px;font-weight:700;padding:8px 12px">⚠ ${result.error}</div></td></tr>`; return; }
         const incomplete = result.k === 20 ? ' <span class="badge">неполная</span>' : '';
