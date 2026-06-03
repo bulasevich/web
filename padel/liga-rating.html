@@ -97,7 +97,8 @@
         .neg { color: #e74c3c; font-weight: 700; }
         .zero { color: #bbb; }
 
-        .standings { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-top: 8px; }
+        #standings { margin-top: 12px; }
+        .standings { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
         .rank-num { color: #ccc; width: 30px; }
         .mode-btn { background: #e8e8e8; color: #555; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
         .mode-btn:hover { background: #d0d0d0; }
@@ -163,6 +164,7 @@
 <button onclick="calculate()" style="margin-bottom:16px">Calculate</button>
 
 <div id="results"></div>
+<div id="standings"></div>
 
 <script>
 function parsePlayers() {
@@ -335,6 +337,26 @@ function renderStandings() {
     if (chk) chk.checked = standingsOrder === 'new';
 }
 
+function copyColumn(col, thEl) {
+    if (!standingsPlayers) return;
+    const sorted = standingsOrder === 'new'
+        ? Object.values(standingsPlayers).sort((a, b) => b.rating - a.rating)
+        : Object.values(standingsPlayers).sort((a, b) => a.order - b.order);
+    const getValue = {
+        rank:   (p, i) => i + 1,
+        player: (p)    => p.display,
+        old:    (p)    => p.initial,
+        delta:  (p)    => p.rating - p.initial,
+        new:    (p)    => p.rating,
+    }[col];
+    const text = sorted.map((p, i) => getValue(p, i)).join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        const orig = thEl.textContent;
+        thEl.textContent = '✓';
+        setTimeout(() => thEl.textContent = orig, 1500);
+    });
+}
+
 function setStandingsOrder(order) {
     standingsOrder = order;
     renderStandings();
@@ -349,7 +371,13 @@ function standingsHtml(players) {
                 new sort <input type="checkbox" id="chk-sort" onchange="setStandingsOrder(this.checked?'new':'old')">
             </label>
         </div>
-        <table><tr><th class="num">#</th><th>Player</th><th class="num">Old</th><th class="num">Δ</th><th class="num">New</th></tr><tbody id="standings-body"></tbody></table>
+        <table><tr>
+    <th class="num"  onclick="copyColumn('rank',   this)" style="cursor:pointer" title="Click to copy">#</th>
+    <th              onclick="copyColumn('player', this)" style="cursor:pointer" title="Click to copy">Player</th>
+    <th class="num"  onclick="copyColumn('old',    this)" style="cursor:pointer" title="Click to copy">Old</th>
+    <th class="num"  onclick="copyColumn('delta',  this)" style="cursor:pointer" title="Click to copy">Δ</th>
+    <th class="num"  onclick="copyColumn('new',    this)" style="cursor:pointer" title="Click to copy">New</th>
+</tr><tbody id="standings-body"></tbody></table>
     </div>`;
 }
 
@@ -368,8 +396,8 @@ function calculate() {
         html += sessionTableHtml(players, results);
     }
 
-    html += standingsHtml(players);
     document.getElementById('results').innerHTML = html;
+    document.getElementById('standings').innerHTML = standingsHtml(players);
     renderStandings();
 }
 
