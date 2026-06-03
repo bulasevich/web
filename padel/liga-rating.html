@@ -58,14 +58,14 @@
         }
         button:hover { background: #357abd; }
 
-        #results { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+        #results { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; width: 100%; }
         .game-card {
             background: #fff;
             border-radius: 10px;
             padding: 16px;
             box-shadow: 0 1px 4px rgba(0,0,0,.08);
-            max-width: 100%;
             overflow-x: auto;
+            flex: 1 1 auto;
         }
         .game-header {
             display: flex;
@@ -86,9 +86,10 @@
             font-size: 11px;
         }
 
-        table { border-collapse: collapse; width: 100%; }
+        table { border-collapse: collapse; width: 100%; min-width: 100%; }
         th { background: #f7f7f7; padding: 5px 8px; text-align: left; font-size: 11px; color: #999; font-weight: 600; text-transform: uppercase; }
         td { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
+        td.num, th.num { text-align: right; }
         tr:last-child td { border-bottom: none; }
         .sep td { border-top: 2px solid #eee; }
 
@@ -120,8 +121,8 @@
 
 <div class="inputs">
     <div class="col-nicks">
-        <label>Игроки</label>
-        <textarea id="nicks" rows="12" placeholder="@Ник">@Kirsh27
+        <label>Players</label>
+        <textarea id="nicks" rows="12" placeholder="@Nick">@Kirsh27
 @Motveous
 @alexspectr
 @BorisUlasevich
@@ -134,7 +135,7 @@
 @paveltverdyy</textarea>
     </div>
     <div class="col-ratings">
-        <label>Рейтинг</label>
+        <label>Rating</label>
         <textarea id="ratings" rows="12" placeholder="000">345
 315
 292
@@ -148,7 +149,7 @@
 81</textarea>
     </div>
     <div class="col-games">
-        <label>Игры</label>
+        <label>Games</label>
         <textarea id="games" rows="12" placeholder="@A @B 6:1 @C @D">@Lehamedtg @alexspectr 6:2 @apriorikrai @paveltverdyy
 @Lehamedtg @apriorikrai 7:5 @alexspectr @paveltverdyy
 @Lehamedtg @paveltverdyy 6:4 @alexspectr @apriorikrai
@@ -159,7 +160,7 @@
     </div>
 </div>
 
-<button onclick="calculate()">Рассчитать</button>
+<button onclick="calculate()" style="margin-bottom:16px">Calculate</button>
 
 <div id="results"></div>
 
@@ -200,7 +201,7 @@ function parseSessions() {
                 team2: [m4[5].toLowerCase(), m4[6].toLowerCase()],
             });
         } else if (m2garbage) {
-            current.push({ parseError: `Не удалось разобрать строку: «${t}»` });
+            current.push({ parseError: `Cannot parse line: «${t}»` });
         } else if (m2) {
             current.push({
                 team1: [m2[1].toLowerCase(), m2[2].toLowerCase()],
@@ -208,7 +209,7 @@ function parseSessions() {
                 team2: null,
             });
         } else if (t.includes('@') || t.match(/\d+:\d+/)) {
-            current.push({ parseError: `Не удалось разобрать строку: «${t}»` });
+            current.push({ parseError: `Cannot parse line: «${t}»` });
         }
     }
     if (current.length) sessions.push(current);
@@ -226,7 +227,7 @@ function parseSessions() {
             if (allNicks.size !== 4) {
                 session.forEach(g => {
                     if (!g.parseError && g.team2 === null)
-                        g.parseError = `Короткий формат работает только при 4 игроках в блоке (найдено: ${allNicks.size})`;
+                        g.parseError = `Short format requires exactly 4 players in the block (found: ${allNicks.size})`;
                 });
             } else {
                 session.forEach(g => {
@@ -253,10 +254,10 @@ function runGame(players, game) {
     const b1 = players[game.team2[0]];
     const b2 = players[game.team2[1]];
 
-    if (!a1) return { error: `Игрок @${game.team1[0]} не найден` };
-    if (!a2) return { error: `Игрок @${game.team1[1]} не найден` };
-    if (!b1) return { error: `Игрок @${game.team2[0]} не найден` };
-    if (!b2) return { error: `Игрок @${game.team2[1]} не найден` };
+    if (!a1) return { error: `Игрок @${game.team1[0]} not found` };
+    if (!a2) return { error: `Игрок @${game.team1[1]} not found` };
+    if (!b1) return { error: `Игрок @${game.team2[0]} not found` };
+    if (!b2) return { error: `Игрок @${game.team2[1]} not found` };
 
     const s1 = game.score1, s2 = game.score2;
     const k = (s1 > 5 || s2 > 5) ? 30 : 20;
@@ -288,17 +289,17 @@ function runGame(players, game) {
 }
 
 function deltaCell(diff) {
-    if (diff > 0) return `<td class="pos">+${diff}</td>`;
-    if (diff < 0) return `<td class="neg">${diff}</td>`;
-    return `<td class="zero">0</td>`;
+    if (diff > 0) return `<td class="pos num">+${diff}</td>`;
+    if (diff < 0) return `<td class="neg num">${diff}</td>`;
+    return `<td class="zero num">0</td>`;
 }
 
 function sessionTableHtml(players, results) {
     let html = `<div class="game-card" style="padding:10px 14px">
-        <table><tr><th style="width:36px">Счёт</th><th>Игрок</th><th>До</th><th style="width:40px">После</th><th>Δ</th></tr>`;
+        <table><tr><th style="width:36px" class="num">Score</th><th>Player</th><th class="num">Old</th><th class="num">Δ</th><th style="width:40px" class="num">New</th></tr>`;
     results.forEach(({game, result}, gi) => {
         if (result.error) { html += `<tr><td colspan="5" style="padding:0"><div style="background:#e74c3c;color:#fff;font-size:14px;font-weight:700;padding:8px 12px">⚠ ${result.error}</div></td></tr>`; return; }
-        const incomplete = result.k === 20 ? ' <span class="badge">неполная</span>' : '';
+        const incomplete = result.k === 20 ? ' <span class="badge">incomplete</span>' : '';
         [game.team1, game.team2].forEach((team, ti) => {
             team.forEach((nick, pi) => {
                 const p = players[nick];
@@ -307,8 +308,8 @@ function sessionTableHtml(players, results) {
                 const isFirst = ti === 0 && pi === 0;
                 const isSep = gi > 0 && isFirst;
                 html += `<tr${isSep ? ' class="sep"' : ''}>
-                    ${isFirst ? `<td rowspan="4" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px;white-space:nowrap">${game.score1}:${game.score2}${incomplete}</td>` : ''}
-                    <td>${p.display}</td><td>${old}</td><td>${result.after[nick]}</td>${deltaCell(diff)}
+                    ${isFirst ? `<td rowspan="4" class="num" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px;white-space:nowrap">${game.score1}:${game.score2}${incomplete}</td>` : ''}
+                    <td>${p.display}</td><td class="num">${old}</td>${deltaCell(diff)}<td class="num">${result.after[nick]}</td>
                 </tr>`;
             });
         });
@@ -327,7 +328,7 @@ function renderStandings() {
     let rows = '';
     sorted.forEach((p, i) => {
         const total = p.rating - p.initial;
-        rows += `<tr><td class="rank-num">${i+1}</td><td>${p.display}</td><td>${p.rating}</td>${deltaCell(total)}</tr>`;
+        rows += `<tr><td class="rank-num num">${i+1}</td><td>${p.display}</td><td class="num">${p.initial}</td>${deltaCell(total)}<td class="num">${p.rating}</td></tr>`;
     });
     document.getElementById('standings-body').innerHTML = rows;
     const chk = document.getElementById('chk-sort');
@@ -343,12 +344,12 @@ function standingsHtml(players) {
     standingsPlayers = players;
     return `<div class="standings">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <h2 style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#999;margin:0">Итоговый рейтинг</h2>
+            <h2 style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#999;margin:0">Final standings</h2>
             <label style="font-size:12px;color:#999;display:flex;align-items:center;gap:4px;cursor:pointer">
-                сортировка <input type="checkbox" id="chk-sort" onchange="setStandingsOrder(this.checked?'new':'old')">
+                new sort <input type="checkbox" id="chk-sort" onchange="setStandingsOrder(this.checked?'new':'old')">
             </label>
         </div>
-        <table><tr><th>#</th><th>Игрок</th><th>Рейтинг</th><th>Δ</th></tr><tbody id="standings-body"></tbody></table>
+        <table><tr><th class="num">#</th><th>Player</th><th class="num">Old</th><th class="num">Δ</th><th class="num">New</th></tr><tbody id="standings-body"></tbody></table>
     </div>`;
 }
 
