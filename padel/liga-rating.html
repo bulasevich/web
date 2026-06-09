@@ -234,7 +234,7 @@ function sessionTableHtml(players, results) {
                 const isFirst = ti === 0 && pi === 0;
                 const isSep = gi > 0 && isFirst;
                 html += `<tr${isSep ? ' class="sep"' : ''}>
-                    ${isFirst ? `<td rowspan="4" class="num" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px;white-space:nowrap">${game.score1}:${game.score2}${incomplete}</td>` : ''}
+                    ${isFirst ? `<td rowspan="4" class="num" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px">${game.score1}:${game.score2}${incomplete}</td>` : ''}
                     <td>${p.display}</td><td class="num">${old}</td>${deltaCell(diff)}<td class="num">${result.after[nick]}</td>
                 </tr>`;
             });
