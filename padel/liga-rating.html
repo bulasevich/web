@@ -15,7 +15,6 @@
             color: #333;
         }
         h1 { margin: 0 0 20px; font-size: 22px; }
-
         .inputs {
             display: flex;
             gap: 8px;
@@ -33,7 +32,6 @@
         .col-nicks { flex: 2; }
         .col-ratings { flex: 1; }
         .col-games { flex: 5; }
-
         textarea {
             width: 100%;
             font-family: 'Courier New', monospace;
@@ -46,7 +44,6 @@
             background: #fff;
         }
         textarea:focus { outline: none; border-color: #4a90e2; }
-
         button {
             background: #4a90e2;
             color: #fff;
@@ -55,28 +52,18 @@
             border-radius: 6px;
             font-size: 15px;
             cursor: pointer;
+            margin-bottom: 16px;
         }
         button:hover { background: #357abd; }
-
         #results { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; width: 100%; }
         .game-card {
             background: #fff;
             border-radius: 10px;
-            padding: 16px;
+            padding: 10px 14px;
             box-shadow: 0 1px 4px rgba(0,0,0,.08);
             overflow-x: auto;
             flex: 1 1 auto;
         }
-        .game-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 14px;
-        }
-        .game-team { flex: 1; font-size: 14px; font-weight: 600; }
-        .game-team.right { text-align: right; }
-        .game-score { flex-shrink: 0; text-align: center; }
-        .game-score .score-num { font-size: 16px; font-weight: 700; color: #222; }
         .badge {
             display: inline-block;
             background: #eef;
@@ -85,27 +72,17 @@
             padding: 1px 6px;
             font-size: 11px;
         }
-
         table { border-collapse: collapse; width: 100%; min-width: 100%; }
         th { background: #f7f7f7; padding: 5px 8px; text-align: left; font-size: 11px; color: #999; font-weight: 600; text-transform: uppercase; }
         td { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
         td.num, th.num { text-align: right; }
         tr:last-child td { border-bottom: none; }
         .sep td { border-top: 2px solid #eee; }
-
         .pos { color: #27ae60; font-weight: 700; }
         .neg { color: #e74c3c; font-weight: 700; }
         .zero { color: #bbb; }
-
-        #standings { margin-top: 12px; }
-        .standings { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+        .standings { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-top: 12px; }
         .rank-num { color: #ccc; width: 30px; }
-        .mode-btn { background: #e8e8e8; color: #555; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
-        .mode-btn:hover { background: #d0d0d0; }
-        .mode-btn.active { background: #4a90e2; color: #fff; }
-
-        .error { background: #fff5f5; border-left: 3px solid #e74c3c; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; color: #c0392b; }
-
         @media (max-width: 600px) {
             .inputs { flex-wrap: wrap; }
             .col-nicks { flex: 3; }
@@ -117,59 +94,24 @@
     </style>
 </head>
 <body>
-
 <h1>Padel Rating Calculator</h1>
-
 <div class="inputs">
     <div class="col-nicks">
-        <label>Players</label>
-        <textarea id="nicks" rows="12" placeholder="@Nick">@Kirsh27
-@Motveous
-@alexspectr
-@BorisUlasevich
-@vorobevsa
-@Denis_Safin
-@MikeWazowski25
-@Lehamedtg
-@ekgardt
-@apriorikrai
-@paveltverdyy</textarea>
+        <label for="nicks">Players</label>
+        <textarea id="nicks" rows="12" placeholder="@Nick"></textarea>
     </div>
     <div class="col-ratings">
-        <label>Rating</label>
-        <textarea id="ratings" rows="12" placeholder="000">345
-315
-292
-289
-248
-247
-246
-242
-206
-203
-81</textarea>
+        <label for="ratings">Rating</label>
+        <textarea id="ratings" rows="12" placeholder="000"></textarea>
     </div>
     <div class="col-games">
-        <label>Games</label>
-        <textarea id="games" rows="12" placeholder="@A @B 6:1 @C @D">@Lehamedtg @alexspectr 6:2 @apriorikrai @paveltverdyy
-@Lehamedtg @apriorikrai 7:5 @alexspectr @paveltverdyy
-@Lehamedtg @paveltverdyy 6:4 @alexspectr @apriorikrai
-
-@Lehamedtg @VorobevSA 6:1 @BorisUlasevich @ekgardt
-@Lehamedtg @ekgardt 6:7 @BorisUlasevich @VorobevSA
-@Lehamedtg @BorisUlasevich 6:3 @VorobevSA @ekgardt
-
-@Lehamedtg @alexspectr 6:4 @apriorikrai @paveltverdyy
-@Lehamedtg @paveltverdyy 6:7 @alexspectr @apriorikrai
-@Lehamedtg @apriorikrai 5:3 @alexspectr @paveltverdyy</textarea>
+        <label for="games">Games</label>
+        <textarea id="games" rows="12" placeholder="@A @B 6:1 @C @D"></textarea>
     </div>
 </div>
-
-<button onclick="calculate()" style="margin-bottom:16px">Calculate</button>
-
+<button onclick="calculate()">Calculate</button>
 <div id="results"></div>
 <div id="standings"></div>
-
 <script>
 function parsePlayers() {
     const nicks = document.getElementById('nicks').value.trim().split('\n');
@@ -197,16 +139,14 @@ function parseSessions() {
             continue;
         }
         const m4 = t.match(/^@?(\S+)\s+@?(\S+)\s+(\d+):(\d+)\s+@?(\S+)\s+@?(\S+)\s*$/i);
-        const m2raw = !m4 && t.match(/^@?(\S+)\s+@?(\S+)\s+(\d+):(\d+)(.*)/i);
-        const m2 = (m2raw && m2raw[5].trim() === '') ? m2raw : null;
-        const m2garbage = (m2raw && m2raw[5].trim() !== '') ? m2raw : null;
+        const m2 = !m4 && t.match(/^@?(\S+)\s+@?(\S+)\s+(\d+):(\d+)(.*)/i);
         if (m4) {
             current.push({
                 team1: [m4[1].toLowerCase(), m4[2].toLowerCase()],
                 score1: parseInt(m4[3]), score2: parseInt(m4[4]),
                 team2: [m4[5].toLowerCase(), m4[6].toLowerCase()],
             });
-        } else if (m2garbage) {
+        } else if (m2 && m2[5].trim()) {
             current.push({ parseError: `Cannot parse line: «${t}»` });
         } else if (m2) {
             current.push({
@@ -246,58 +186,32 @@ function parseSessions() {
     return sessions;
 }
 
-function realValue(s1, s2) {
-    if (s1 - s2 > 1) return 1.0;
-    if (s2 - s1 > 1) return 0.0;
-    if (s1 > s2) return 0.75;
-    if (s1 < s2) return 0.25;
-    return 0.5;
-}
-
 function runGame(players, game) {
-    const a1 = players[game.team1[0]];
-    const a2 = players[game.team1[1]];
-    const b1 = players[game.team2[0]];
-    const b2 = players[game.team2[1]];
-
-    if (!a1) return { error: `Player @${game.team1[0]} not found` };
-    if (!a2) return { error: `Player @${game.team1[1]} not found` };
-    if (!b1) return { error: `Player @${game.team2[0]} not found` };
-    if (!b2) return { error: `Player @${game.team2[1]} not found` };
-
-    const allNicks = [game.team1[0], game.team1[1], game.team2[0], game.team2[1]];
-    if (new Set(allNicks).size !== 4) {
-        const dup = allNicks.find((n, i) => allNicks.indexOf(n) !== i);
-        return { error: `Duplicate player @${dup} in one game` };
+    const nicks4 = [...game.team1, ...game.team2];
+    const missing = nicks4.find(n => !players[n]);
+    if (missing) {
+      return { error: `Player @${missing} not found` };
     }
-
-    const s1 = game.score1, s2 = game.score2;
-    const k = (s1 > 5 || s2 > 5) ? 30 : 20;
-    const expA = 1 / (1 + Math.pow(10, ((b1.rating + b2.rating) - (a1.rating + a2.rating)) / 400));
-    const realA = realValue(s1, s2);
-    const realB = 1 - realA;
-    const expB = 1 - expA;
-
+    if (new Set(nicks4).size !== 4) {
+        return { error: `Duplicate player @${nicks4.find((n, i) => nicks4.indexOf(n) !== i)} in one game` };
+    }
+    const [a1, a2, b1, b2] = nicks4.map(n => players[n]);
     const before = {
-        [game.team1[0]]: a1.rating,
-        [game.team1[1]]: a2.rating,
-        [game.team2[0]]: b1.rating,
-        [game.team2[1]]: b2.rating,
+        [game.team1[0]]: a1.rating, [game.team1[1]]: a2.rating,
+        [game.team2[0]]: b1.rating, [game.team2[1]]: b2.rating,
     };
-
-    a1.rating = Math.round(a1.rating + k * (realA - expA));
-    a2.rating = Math.round(a2.rating + k * (realA - expA));
-    b1.rating = Math.round(b1.rating + k * (realB - expB));
-    b2.rating = Math.round(b2.rating + k * (realB - expB));
-
+    const s1 = game.score1, s2 = game.score2;
+    const kFactor = (s1 > 5 || s2 > 5) ? 30 : 20;
+    const expA = 1 / (1 + Math.pow(10, (b1.rating + b2.rating - a1.rating - a2.rating) / 400));
+    const realA = (s1 - s2 > 1) ? 1.0 : (s2 - s1 > 1) ? 0.0 : (s1 > s2) ? 0.75 : (s1 < s2) ? 0.25 : 0.5;
+    const delta = kFactor * (realA - expA);
     const after = {
-        [game.team1[0]]: a1.rating,
-        [game.team1[1]]: a2.rating,
-        [game.team2[0]]: b1.rating,
-        [game.team2[1]]: b2.rating,
+        [game.team1[0]]: a1.rating = Math.round(a1.rating + delta),
+        [game.team1[1]]: a2.rating = Math.round(a2.rating + delta),
+        [game.team2[0]]: b1.rating = Math.round(b1.rating - delta),
+        [game.team2[1]]: b2.rating = Math.round(b2.rating - delta),
     };
-
-    return { before, after, k };
+    return { before, after, kFactor };
 }
 
 function deltaCell(diff) {
@@ -307,11 +221,11 @@ function deltaCell(diff) {
 }
 
 function sessionTableHtml(players, results) {
-    let html = `<div class="game-card" style="padding:10px 14px">
+    let html = `<div class="game-card">
         <table><tr><th style="width:36px" class="num">Score</th><th>Player</th><th class="num">Old</th><th class="num">Δ</th><th style="width:40px" class="num">New</th></tr>`;
     results.forEach(({game, result}, gi) => {
         if (result.error) { html += `<tr><td colspan="5" style="padding:0"><div style="background:#e74c3c;color:#fff;font-size:14px;font-weight:700;padding:8px 12px">⚠ ${result.error}</div></td></tr>`; return; }
-        const incomplete = result.k === 20 ? ' <span class="badge">incomplete</span>' : '';
+        const incomplete = result.kFactor === 20 ? ' <span class="badge">incomplete</span>' : '';
         [game.team1, game.team2].forEach((team, ti) => {
             team.forEach((nick, pi) => {
                 const p = players[nick];
@@ -332,13 +246,17 @@ function sessionTableHtml(players, results) {
 let standingsPlayers = null;
 let standingsOrder = 'old';
 
+function getSorted() {
+    const players = Object.values(standingsPlayers);
+    return standingsOrder === 'new'
+        ? players.sort((a, b) => b.rating - a.rating)
+        : players.sort((a, b) => a.order - b.order);
+}
+
 function renderStandings() {
     if (!standingsPlayers) return;
-    const byNew = Object.values(standingsPlayers).sort((a, b) => b.rating - a.rating);
-    const byOld = Object.values(standingsPlayers).sort((a, b) => a.order - b.order);
-    const sorted = standingsOrder === 'new' ? byNew : byOld;
     let rows = '';
-    sorted.forEach((p, i) => {
+    getSorted().forEach((p, i) => {
         const total = p.rating - p.initial;
         rows += `<tr><td class="rank-num num">${i+1}</td><td>${p.display}</td><td class="num">${p.initial}</td>${deltaCell(total)}<td class="num">${p.rating}</td></tr>`;
     });
@@ -349,9 +267,6 @@ function renderStandings() {
 
 function copyColumn(col, thEl) {
     if (!standingsPlayers) return;
-    const sorted = standingsOrder === 'new'
-        ? Object.values(standingsPlayers).sort((a, b) => b.rating - a.rating)
-        : Object.values(standingsPlayers).sort((a, b) => a.order - b.order);
     const getValue = {
         rank:   (p, i) => i + 1,
         player: (p)    => p.display,
@@ -359,7 +274,7 @@ function copyColumn(col, thEl) {
         delta:  (p)    => p.rating - p.initial,
         new:    (p)    => p.rating,
     }[col];
-    const text = sorted.map((p, i) => getValue(p, i)).join('\n');
+    const text = getSorted().map((p, i) => getValue(p, i)).join('\n');
     navigator.clipboard.writeText(text).then(() => {
         const orig = thEl.textContent;
         thEl.textContent = '✓';
@@ -382,35 +297,75 @@ function standingsHtml(players) {
             </label>
         </div>
         <table><tr>
-    <th class="num"  onclick="copyColumn('rank',   this)" style="cursor:pointer" title="Click to copy">#</th>
-    <th              onclick="copyColumn('player', this)" style="cursor:pointer" title="Click to copy">Player</th>
-    <th class="num"  onclick="copyColumn('old',    this)" style="cursor:pointer" title="Click to copy">Old</th>
-    <th class="num"  onclick="copyColumn('delta',  this)" style="cursor:pointer" title="Click to copy">Δ</th>
-    <th class="num"  onclick="copyColumn('new',    this)" style="cursor:pointer" title="Click to copy">New</th>
-</tr><tbody id="standings-body"></tbody></table>
+            <th class="num"  onclick="copyColumn('rank',   this)" style="cursor:pointer" title="Click to copy">#</th>
+            <th              onclick="copyColumn('player', this)" style="cursor:pointer" title="Click to copy">Player</th>
+            <th class="num"  onclick="copyColumn('old',    this)" style="cursor:pointer" title="Click to copy">Old</th>
+            <th class="num"  onclick="copyColumn('delta',  this)" style="cursor:pointer" title="Click to copy">Δ</th>
+            <th class="num"  onclick="copyColumn('new',    this)" style="cursor:pointer" title="Click to copy">New</th>
+        </tr><tbody id="standings-body"></tbody></table>
     </div>`;
 }
 
 function calculate() {
     const players = parsePlayers();
     const sessions = parseSessions();
-    let html = '';
-
-    for (const games of sessions) {
-        const results = [];
-        for (const game of games) {
-            if (game.parseError) { results.push({game, result: {error: game.parseError}}); continue; }
-        const result = runGame(players, game);
-            results.push({game, result});
-        }
-        html += sessionTableHtml(players, results);
-    }
-
+    const html = sessions.map(games => {
+        const results = games.map(game => ({
+            game,
+            result: game.parseError ? {error: game.parseError} : runGame(players, game),
+        }));
+        return sessionTableHtml(players, results);
+    }).join('');
     document.getElementById('results').innerHTML = html;
     document.getElementById('standings').innerHTML = standingsHtml(players);
     renderStandings();
 }
 
+const NICKS = `\
+@Kirsh27
+@Motveous
+@alexspectr
+@BorisUlasevich
+@vorobevsa
+@Denis_Safin
+@MikeWazowski25
+@Lehamedtg
+@ekgardt
+@apriorikrai
+@paveltverdyy
+`;
+
+const RATINGS = `\
+345
+315
+292
+289
+248
+247
+246
+242
+206
+203
+81
+`;
+
+const GAMES = `\
+@Lehamedtg @alexspectr 6:2 @apriorikrai @paveltverdyy
+@Lehamedtg @apriorikrai 7:5 @alexspectr @paveltverdyy
+@Lehamedtg @paveltverdyy 6:4 @alexspectr @apriorikrai
+
+@Lehamedtg @VorobevSA 6:1 @BorisUlasevich @ekgardt
+@Lehamedtg @ekgardt 6:7 @BorisUlasevich @VorobevSA
+@Lehamedtg @BorisUlasevich 6:3 @VorobevSA @ekgardt
+
+@Lehamedtg @alexspectr 6:4 @apriorikrai @paveltverdyy
+@Lehamedtg @paveltverdyy 6:7 @alexspectr @apriorikrai
+@Lehamedtg @apriorikrai 5:3 @alexspectr @paveltverdyy
+`;
+
+document.getElementById('nicks').value = NICKS;
+document.getElementById('ratings').value = RATINGS;
+document.getElementById('games').value = GAMES;
 calculate();
 </script>
 </body>
