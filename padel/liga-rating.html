@@ -157,7 +157,11 @@
 
 @Lehamedtg @VorobevSA 6:1 @BorisUlasevich @ekgardt
 @Lehamedtg @ekgardt 6:7 @BorisUlasevich @VorobevSA
-@Lehamedtg @BorisUlasevich 6:3 @VorobevSA @ekgardt</textarea>
+@Lehamedtg @BorisUlasevich 6:3 @VorobevSA @ekgardt
+
+@Lehamedtg @alexspectr 6:4 @apriorikrai @paveltverdyy
+@Lehamedtg @paveltverdyy 6:7 @alexspectr @apriorikrai
+@Lehamedtg @apriorikrai 5:3 @alexspectr @paveltverdyy</textarea>
     </div>
 </div>
 
@@ -192,8 +196,8 @@ function parseSessions() {
             if (current.length) { sessions.push(current); current = []; }
             continue;
         }
-        const m4 = t.match(/^@(\S+)\s+@(\S+)\s+(\d+):(\d+)\s+@(\S+)\s+@(\S+)\s*$/i);
-        const m2raw = !m4 && t.match(/^@(\S+)\s+@(\S+)\s+(\d+):(\d+)(.*)/i);
+        const m4 = t.match(/^@?(\S+)\s+@?(\S+)\s+(\d+):(\d+)\s+@?(\S+)\s+@?(\S+)\s*$/i);
+        const m2raw = !m4 && t.match(/^@?(\S+)\s+@?(\S+)\s+(\d+):(\d+)(.*)/i);
         const m2 = (m2raw && m2raw[5].trim() === '') ? m2raw : null;
         const m2garbage = (m2raw && m2raw[5].trim() !== '') ? m2raw : null;
         if (m4) {
