@@ -225,7 +225,7 @@ function sessionTableHtml(players, results) {
         <table><tr><th style="width:36px" class="num">Score</th><th>Player</th><th class="num">Old</th><th class="num">Δ</th><th style="width:40px" class="num">New</th></tr>`;
     results.forEach(({game, result}, gi) => {
         if (result.error) { html += `<tr><td colspan="5" style="padding:0"><div style="background:#e74c3c;color:#fff;font-size:14px;font-weight:700;padding:8px 12px">⚠ ${result.error}</div></td></tr>`; return; }
-        const incomplete = result.kFactor === 20 ? ' <span class="badge">incomplete</span>' : '';
+        const bold = result.kFactor === 20;
         [game.team1, game.team2].forEach((team, ti) => {
             team.forEach((nick, pi) => {
                 const p = players[nick];
@@ -233,8 +233,9 @@ function sessionTableHtml(players, results) {
                 const diff = result.after[nick] - old;
                 const isFirst = ti === 0 && pi === 0;
                 const isSep = gi > 0 && isFirst;
+                const score = bold ? `<strong style="color:#e74c3c">${game.score1}:${game.score2}</strong>` : `${game.score1}:${game.score2}`;
                 html += `<tr${isSep ? ' class="sep"' : ''}>
-                    ${isFirst ? `<td rowspan="4" class="num" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px">${game.score1}:${game.score2}${incomplete}</td>` : ''}
+                    ${isFirst ? `<td rowspan="4" class="num" style="font-size:11px;color:#888;vertical-align:top;padding-top:8px">${score}</td>` : ''}
                     <td>${p.display}</td><td class="num">${old}</td>${deltaCell(diff)}<td class="num">${result.after[nick]}</td>
                 </tr>`;
             });
@@ -324,43 +325,36 @@ function calculate() {
 const NICKS = `\
 @Kirsh27
 @Motveous
-@alexspectr
+@Lehamedtg
 @BorisUlasevich
+@alexspectr
 @vorobevsa
 @Denis_Safin
 @MikeWazowski25
-@Lehamedtg
-@ekgardt
 @apriorikrai
+@ekgardt
 @paveltverdyy
 `;
 
 const RATINGS = `\
 345
 315
-292
-289
-248
+306
+291
+268
+256
 247
 246
-242
-206
-203
-81
+193
+178
+69
 `;
 
 const GAMES = `\
-@Lehamedtg @alexspectr 6:2 @apriorikrai @paveltverdyy
-@Lehamedtg @apriorikrai 7:5 @alexspectr @paveltverdyy
-@Lehamedtg @paveltverdyy 6:4 @alexspectr @apriorikrai
-
-@Lehamedtg @VorobevSA 6:1 @BorisUlasevich @ekgardt
-@Lehamedtg @ekgardt 6:7 @BorisUlasevich @VorobevSA
-@Lehamedtg @BorisUlasevich 6:3 @VorobevSA @ekgardt
-
-@Lehamedtg @alexspectr 6:4 @apriorikrai @paveltverdyy
-@Lehamedtg @paveltverdyy 6:7 @alexspectr @apriorikrai
-@Lehamedtg @apriorikrai 5:3 @alexspectr @paveltverdyy
+@BorisUlasevich @VorobevSA 6:1
+@BorisUlasevich @MikeWazowski25 6:4
+@BorisUlasevich @ekgardt 6:3
+@BorisUlasevich @VorobevSA 6:3
 `;
 
 document.getElementById('nicks').value = NICKS;
