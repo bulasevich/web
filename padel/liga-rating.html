@@ -129,7 +129,10 @@ function parsePlayers() {
 }
 
 function parseSessions() {
-    const lines = document.getElementById('games').value.split('\n');
+    let raw = document.getElementById('games').value.replace(/,/g, '');
+    raw = raw.replace(/([^\n\r]+)\n[ \t]*(\d+:\d+)[ \t]*\n([^\n\r]+)/g,
+        (_, t1, score, t2) => `${t1.trim()} ${score.trim()} ${t2.trim()}`);
+    const lines = raw.split('\n');
     const sessions = [];
     let current = [];
     for (const line of lines) {
@@ -324,9 +327,9 @@ function calculate() {
 
 const NICKS = `\
 @Kirsh27
+@BorisUlasevich
 @Motveous
 @Lehamedtg
-@BorisUlasevich
 @alexspectr
 @vorobevsa
 @Denis_Safin
@@ -338,23 +341,27 @@ const NICKS = `\
 
 const RATINGS = `\
 345
+336
 315
 306
-291
 268
-256
 247
-246
+247
+223
 193
-178
+165
 69
 `;
 
 const GAMES = `\
-@BorisUlasevich @VorobevSA 6:1
-@BorisUlasevich @MikeWazowski25 6:4
-@BorisUlasevich @ekgardt 6:3
-@BorisUlasevich @VorobevSA 6:3
+@ekgardt @apriorikrai 6:2 @motveous @BorisUlasevich
+@apriorikrai @motveous 6:4 @ekgardt @BorisUlasevich
+@apriorikrai @BorisUlasevich 7:6 @motveous @ekgardt
+
+@Denis_Safin @apriorikrai 6:4 @BorisUlasevich @VorobevSA
+@Denis_Safin @BorisUlasevich 6:3 @VorobevSA @apriorikrai
+@Denis_Safin @VorobevSA 6:1 @BorisUlasevich @apriorikrai
+@Denis_Safin @apriorikrai 6:3 @VorobevSA @BorisUlasevich
 `;
 
 document.getElementById('nicks').value = NICKS;
